@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether Finance | Premium Wealth Tracker</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Blurry Ambient Background Orbs -->
+    <div class="bg-orb orb-cyan"></div>
+    <div class="bg-orb orb-violet"></div>
+    <div class="bg-orb orb-green"></div>
+
+    <!-- Auth Section (Login/Register Card) -->
+    <div class="auth-wrapper" id="auth-container">
+        <div class="auth-card glass">
+            <div class="brand auth-brand">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-wind logo-glow"></i>
+                </div>
+                <h2>AETHER</h2>
+            </div>
+            
+            <h3 id="auth-title">Access Portal</h3>
+            <p class="subtitle" id="auth-subtitle font-size-sm">Please authenticate to access your portfolio tracker.</p>
+
+            <form id="auth-form" class="form-layout">
+                <!-- Registration Specific Form Group -->
+                <div class="form-group" id="reg-name-group" style="display: none;">
+                    <label for="auth-fullname">Full Name</label>
+                    <input type="text" id="auth-fullname" placeholder="e.g. Vighnesh Kada">
+                </div>
+
+                <div class="form-group">
+                    <label for="auth-username">Username</label>
+                    <input type="text" id="auth-username" placeholder="e.g. vighnesh" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="auth-password">Password</label>
+                    <input type="password" id="auth-password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+
+                <!-- Error Messages Box -->
+                <div class="auth-error-box" id="auth-error-msg" style="display: none;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span id="auth-error-text">Authentication failed</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" id="btn-auth-submit">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="auth-toggle-row">
+                <span id="auth-toggle-text">New to Aether?</span>
+                <a href="#" id="auth-toggle-link">Create Account</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container (Hidden initially until user logs in) -->
+    <div class="app-container" id="main-app" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass">
+            <div class="brand">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-wind logo-glow"></i>
+                </div>
+                <h2>AETHER</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-target="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-target="transactions">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="#" class="nav-item" data-target="portfolio">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Portfolio</span>
+                </a>
+                <a href="#" class="nav-item" data-target="budgets">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Budgets</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile-row">
+                    <div class="avatar">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <div class="user-meta-info">
+                        <span class="user-name" id="profile-name">Vighnesh K.</span>
+                        <span class="user-status">Premium Tier</span>
+                    </div>
+                    <button class="btn-logout" id="btn-logout" title="Log Out">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard View Container -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header glass">
+                <div class="header-left">
+                    <h1 id="page-title">Financial Dashboard</h1>
+                    <p class="subtitle" id="page-subtitle">Real-time overview of your wealth and capital allocation.</p>
+                </div>
+                <div class="header-right">
+                    <div class="date-badge">
+                        <i class="fa-regular fa-calendar-days"></i>
+                        <span id="current-date">June 3, 2026</span>
+                    </div>
+                    <button class="btn btn-primary" id="btn-quick-transaction">
+                        <i class="fa-solid fa-plus"></i> New Transaction
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <!-- Stat Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card glass border-cyan">
+                        <div class="card-glow glow-cyan"></div>
+                        <div class="stat-header">
+                            <span class="stat-title">Net Worth</span>
+                            <div class="stat-icon icon-cyan"><i class="fa-solid fa-gem"></i></div>
+                        </div>
+                        <h2 class="stat-value" id="stat-net-worth">₹0.00</h2>
+                        <span class="stat-trend trend-up">
+                            <i class="fa-solid fa-arrow-trend-up"></i> +4.8% this month
+                        </span>
+                    </div>
+
+                    <div class="stat-card glass border-green">
+                        <div class="card-glow glow-green"></div>
+                        <div class="stat-header">
+                            <span class="stat-title">Monthly Income</span>
+                            <div class="stat-icon icon-green"><i class="fa-solid fa-circle-arrow-down"></i></div>
+                        </div>
+                        <h2 class="stat-value" id="stat-income">₹0.00</h2>
+                        <span class="stat-trend trend-up">
+                            <i class="fa-solid fa-arrow-trend-up"></i> Salary + Projects
+                        </span>
+                    </div>
+
+                    <div class="stat-card glass border-coral">
+                        <div class="card-glow glow-coral"></div>
+                        <div class="stat-header">
+                            <span class="stat-title">Total Expenses</span>
+                            <div class="stat-icon icon-coral"><i class="fa-solid fa-circle-arrow-up"></i></div>
+                        </div>
+                        <h2 class="stat-value" id="stat-expenses">₹0.00</h2>
+                        <span class="stat-trend trend-down">
+                            <i class="fa-solid fa-arrow-trend-down"></i> Rent + Leisure
+                        </span>
+                    </div>
+
+                    <div class="stat-card glass border-violet">
+                        <div class="card-glow glow-violet"></div>
+                        <div class="stat-header">
+                            <span class="stat-title">Monthly Cash Flow</span>
+                            <div class="stat-icon icon-violet"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                        </div>
+                        <h2 class="stat-value" id="stat-cashflow">₹0.00</h2>
+                        <span class="stat-trend trend-up">
+                            <i class="fa-solid fa-money-bill-trend-up"></i> Net Surplus
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-card glass">
+                        <h3>Portfolio Valuation Trend</h3>
+                        <div class="chart-container">
+                            <canvas id="netWorthChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card glass">
+                        <h3>Asset Allocation</h3>
+                        <div class="chart-container">
+                            <canvas id="assetAllocationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split Dashboard Details -->
+                <div class="details-grid">
+                    <!-- Recent Activities -->
+                    <div class="details-card glass flex-column">
+                        <div class="card-title-row">
+                            <h3>Recent Activity</h3>
+                            <a href="#" class="view-all-link" data-target="transactions">View All</a>
+                        </div>
+                        <div class="activity-list" id="dashboard-activities">
+                            <!-- Populated dynamically -->
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+
+                    <!-- Budget Summary Progress -->
+                    <div class="details-card glass flex-column">
+                        <div class="card-title-row">
+                            <h3>Active Budgets</h3>
+                            <a href="#" class="view-all-link" data-target="budgets">Manage</a>
+                        </div>
+                        <div class="budget-progress-list" id="dashboard-budgets">
+                            <!-- Populated dynamically -->
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions Section -->
+            <section id="transactions" class="content-section">
+                <div class="filter-actions-row glass">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="transaction-search" placeholder="Search transactions...">
+                    </div>
+                    <div class="filter-group">
+                        <select id="filter-type" class="glass-select">
+                            <option value="ALL">All Types</option>
+                            <option value="INCOME">Income</option>
+                            <option value="EXPENSE">Expense</option>
+                        </select>
+                        <select id="filter-category" class="glass-select">
+                            <option value="ALL">All Categories</option>
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-card glass">
+                    <div class="table-wrapper">
+                        <table class="transaction-table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transaction-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Portfolio Section -->
+            <section id="portfolio" class="content-section">
+                <div class="portfolio-grid">
+                    <!-- Assets List Table -->
+                    <div class="assets-list-card glass">
+                        <div class="card-title-row">
+                            <h3>Your Assets</h3>
+                            <button class="btn btn-secondary btn-sm" id="btn-add-asset-toggle">
+                                <i class="fa-solid fa-plus"></i> Add Asset
+                            </button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="asset-table">
+                                <thead>
+                                    <tr>
+                                        <th>Asset Name</th>
+                                        <th>Category</th>
+                                        <th>Growth Rate</th>
+                                        <th class="text-right">Value</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="asset-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Add Asset Form Panel (Initially hidden or shown as card) -->
+                    <div class="asset-form-card glass">
+                        <h3>Add Capital Asset</h3>
+                        <form id="add-asset-form" class="form-layout">
+                            <div class="form-group">
+                                <label for="asset-name">Asset Name</label>
+                                <input type="text" id="asset-name" placeholder="e.g. HDFC Balance Fund" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="asset-category">Category</label>
+                                <select id="asset-category" required>
+                                    <option value="Stocks">Stocks</option>
+                                    <option value="Crypto">Crypto</option>
+                                    <option value="Gold">Gold</option>
+                                    <option value="Real Estate">Real Estate</option>
+                                    <option value="Cash">Cash / Savings</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="asset-value">Current Value (₹)</label>
+                                    <input type="number" id="asset-value" step="0.01" placeholder="0.00" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="asset-growth">Est. Annual Growth (%)</label>
+                                    <input type="number" id="asset-growth" step="0.1" placeholder="5.0" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <i class="fa-solid fa-plus"></i> Add to Portfolio
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Budgets Section -->
+            <section id="budgets" class="content-section">
+                <div class="budgets-layout">
+                    <!-- Budgets Settings Card -->
+                    <div class="budget-form-card glass">
+                        <h3>Adjust Budget Constraints</h3>
+                        <p class="subtitle">Set limits for specific categories to manage expenses.</p>
+                        <form id="adjust-budget-form" class="form-layout">
+                            <div class="form-group">
+                                <label for="budget-category">Category</label>
+                                <input type="text" id="budget-category" placeholder="e.g. Food, Utilities, Leisure" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="budget-limit">Monthly Limit (₹)</label>
+                                <input type="number" id="budget-limit" step="0.01" placeholder="0.00" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <i class="fa-solid fa-floppy-disk"></i> Set Limit
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Detailed Budgets Progress Card -->
+                    <div class="budget-details-card glass">
+                        <h3>Budget Performance</h3>
+                        <div class="budget-full-list" id="budget-full-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Quick Transaction Modal -->
+    <div class="modal-overlay" id="transaction-modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3>Add New Transaction</h3>
+                <button class="modal-close" id="modal-close-btn">&times;</button>
+            </div>
+            <form id="add-transaction-form" class="form-layout">
+                <div class="form-group">
+                    <label for="tx-description">Description</label>
+                    <input type="text" id="tx-description" placeholder="e.g. Grocery Shopping" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tx-type">Transaction Type</label>
+                        <select id="tx-type" required>
+                            <option value="EXPENSE">Expense</option>
+                            <option value="INCOME">Income</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tx-amount">Amount (₹)</label>
+                        <input type="number" id="tx-amount" step="0.01" placeholder="0.00" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tx-category">Category</label>
+                        <input type="text" id="tx-category" placeholder="e.g. Salary, Rent, Food, Utilities" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tx-date">Date</label>
+                        <input type="date" id="tx-date" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

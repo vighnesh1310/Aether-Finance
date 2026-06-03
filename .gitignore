@@ -1,0 +1,34 @@
+# Maven
+target/
+*.war
+*.sar
+*.ear
+*.jar
+*.class
+
+# Database Storage (Very important to ignore local databases)
+data/
+*.db
+*.mv.db
+*.trace.db
+
+# Eclipse
+.metadata
+.classpath
+.project
+.settings/
+*.launch
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
